@@ -26,11 +26,11 @@ yum clean all
 
 RUN yum install -y epel-release
 RUN yum install R -y
-RUN yum install -y rstudio
-RUN yum clean all
+#RUN yum install -y rstudio
 
-#RUN wget https://download2.rstudio.org/rstudio-server-rhel-1.0.44-x86_64.rpm
-#RUN yum install --nogpgcheck rstudio-server-rhel-1.0.44-x86_64.rpm -y
+RUN wget https://download2.rstudio.org/rstudio-server-rhel-1.0.44-x86_64.rpm
+RUN yum install --nogpgcheck rstudio-server-rhel-1.0.44-x86_64.rpm -y
+RUN yum clean all
 RUN firewall-cmd --permanent --zone=public --add-port=8787/tcp
 
 RUN useradd docker \
