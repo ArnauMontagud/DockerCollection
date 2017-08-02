@@ -12,7 +12,7 @@ ENV HOME /root
 # Define working directory.
 WORKDIR /root
 
-FROM rocker/rstudio
+#FROM rocker/rstudio
 
 CMD ["/bin/bash"]
 
