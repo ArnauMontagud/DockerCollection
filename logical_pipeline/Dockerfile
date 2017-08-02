@@ -18,7 +18,10 @@ yum clean all
 #ENV LANG en_US.UTF-8
 #ENV R_BASE_VERSION 3.4.1
 
-RUN yum install -y R-core R-devel R-littler rstudio && \
+RUN yum install -y R-core && \
+yum -y install R-devel && \
+yum -y install R-littler && \
+yum -y install rstudio && \
 yum clean all
 
 RUN useradd docker \
