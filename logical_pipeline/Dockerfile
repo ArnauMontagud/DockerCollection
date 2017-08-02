@@ -10,5 +10,7 @@ RUN yum -y install perl perl-core && yum clean all
 #    && cpanm Carton \
 #    && rm -rf /root/.cpanm
 
+FROM rocker/rstudio
+
 #CMD [ "perl", "-de0" ]
 CMD ["/bin/bash"]
