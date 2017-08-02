@@ -30,4 +30,4 @@ RUN useradd docker \
 	&& addgroup docker staff
 
 	
-CMD ["/bin/bash"]
+CMD ["/bin/bash"]  
