@@ -1,13 +1,5 @@
-FROM scratch
+FROM centos:7
 LABEL maintainer="Arnau Montagud <arnau.montagud@gmail.com>"
-ADD centos-7-docker.tar.xz /
-
-LABEL name="CentOS Base Image" \
-    vendor="CentOS" \
-    license="GPLv2" \
-    build-date="20170705"
-
-#CMD ["/bin/bash"]
 
 #FROM sherwind/centos-buildpack-deps:centos7
 #MAINTAINER Sherwin Daganato <sherwin@daganato.com>
