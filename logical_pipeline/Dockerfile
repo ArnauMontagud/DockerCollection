@@ -18,11 +18,20 @@ yum clean all
 #ENV LANG en_US.UTF-8
 #ENV R_BASE_VERSION 3.4.1
 
-RUN yum -y install R-core && \
-yum -y install R-devel && \
-yum -y install R-littler && \
-yum -y install rstudio && \
+#RUN yum install -y R-core && \
+#yum install -y R-devel && \
+#yum install -y R-littler && \
+#yum install -y rstudio && \
+#yum clean all
+
+RUN yum install epel-release && \
+yum install R -y && \
+yum install -y rstudio && \
 yum clean all
+
+#RUN wget https://download2.rstudio.org/rstudio-server-rhel-1.0.44-x86_64.rpm
+#RUN yum install --nogpgcheck rstudio-server-rhel-1.0.44-x86_64.rpm -y
+RUN firewall-cmd --permanent --zone=public --add-port=8787/tcp
 
 RUN useradd docker \
 	&& mkdir /home/docker \
