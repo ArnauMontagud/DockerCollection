@@ -18,7 +18,7 @@ yum clean all
 #ENV LANG en_US.UTF-8
 #ENV R_BASE_VERSION 3.4.1
 
-RUN yum install -y R-core && \
+RUN yum-y install R-core && \
 yum -y install R-devel && \
 yum -y install R-littler && \
 yum -y install rstudio && \
