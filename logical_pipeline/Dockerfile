@@ -1,4 +1,5 @@
 # Debian stretch + java + R-3.4.1 (includes perl) + rstudio
+LABEL maintainer="Arnau Montagud <arnau.montagud@gmail.com>"
 
 #docker-library/buildpack-deps/stretch/curl/Dockerfile
 #https://github.com/docker-library/buildpack-deps/blob/9f60e19008458220114f1a0b6cd3710f1015d402/stretch/curl/Dockerfile
@@ -292,7 +293,7 @@ EXPOSE 8787
 
 ## automatically link a shared volume for kitematic users
 VOLUME /home/rstudio/kitematic
-
-CMD ["/init"]
+RUN R -e " install.packages(c('FactoMineR','ggplot2','scales','grid','plyr','gridExtra','ggrepel','RColorBrewer','reshape2','cowplot'), repos = 'http://cran.us.r-project.org')"
+#CMD ["/init"]
 CMD ["bash"]
 
