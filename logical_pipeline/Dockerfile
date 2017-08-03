@@ -31,12 +31,17 @@ RUN yum install R -y
 RUN wget https://download2.rstudio.org/rstudio-server-rhel-1.0.44-x86_64.rpm
 RUN yum install --nogpgcheck rstudio-server-rhel-1.0.44-x86_64.rpm -y
 RUN yum clean all
-RUN firewall-cmd --permanent --zone=public --add-port=8787/tcp
+#RUN firewall-cmd --permanent --zone=public --add-port=8787/tcp
 
 RUN useradd docker \
 	&& mkdir /home/docker \
 	&& chown docker:docker /home/docker \
 	&& addgroup docker staff
+
+EXPOSE 8787
+## automatically link a shared volume for kitematic users
+VOLUME /home/rstudio/kitematic
+#CMD ["/init"]
 
 	
 CMD ["/bin/bash"]  
