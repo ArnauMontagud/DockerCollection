@@ -1,47 +1,293 @@
-FROM centos:7
-LABEL maintainer="Arnau Montagud <arnau.montagud@gmail.com>"
+#debuerreotype/docker-debian-artifacts
+#https://github.com/debuerreotype/docker-debian-artifacts/blob/42bec5bc2f5a76ceeb125bc4e66d6f70a95e933f/stretch/Dockerfile
 
-RUN yum -y update && yum clean all
-RUN yum -y install perl perl-core && yum clean all
+#docker-debian-oracle-java/7/jre/Dockerfile
+#https://github.com/davidcaste/docker-debian-oracle-java/blob/master/7/jre/Dockerfile
+FROM debian:stretch
+ENV JAVA_VERSION_MAJOR=7 \
+    JAVA_VERSION_MINOR=80 \
+    JAVA_VERSION_BUILD=15 \
+    JAVA_PACKAGE=server-jre \
+    JAVA_HOME=/opt/java \
+    JVM_OPTS="" \
+    PATH=${PATH}:/opt/java/bin \
+    LANG=C.UTF-8
 
-RUN yum install -y wget && \
-yum install -y java-1.7.0-openjdk-headless && \
-yum clean all
+RUN apt-get update -q && \
+    apt-get install -q -y --no-install-recommends ca-certificates curl unzip && \
+    curl -jksSLH "Cookie: oraclelicense=accept-securebackup-cookie" -o /tmp/java.tar.gz \
+      http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz && \
+    gunzip /tmp/java.tar.gz && \
+    tar -C /opt -xf /tmp/java.tar && \
+    ln -s /opt/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} ${JAVA_HOME} && \
+    find ${JAVA_HOME} -maxdepth 1 -mindepth 1 | grep -v jre | xargs rm -rf && \
+    cd ${JAVA_HOME} && ln -s ./jre/bin ./bin && \
+    curl -jksSLH "Cookie: oraclelicense=accept-securebackup-cookie" -o /tmp/unlimited_jce_policy.zip "http://download.oracle.com/otn-pub/java/jce/7/UnlimitedJCEPolicyJDK7.zip" && \
+    unzip -jo -d ${JAVA_HOME}/jre/lib/security /tmp/unlimited_jce_policy.zip && \
+    rm -rf ${JAVA_HOME}/*src.zip \
+           ${JAVA_HOME}/lib/missioncontrol \
+           ${JAVA_HOME}/lib/visualvm \
+           ${JAVA_HOME}/lib/*javafx* \
+           ${JAVA_HOME}/jre/plugin \
+           ${JAVA_HOME}/jre/bin/javaws \
+           ${JAVA_HOME}/jre/bin/jjs \
+           ${JAVA_HOME}/jre/bin/keytool \
+           ${JAVA_HOME}/jre/bin/orbd \
+           ${JAVA_HOME}/jre/bin/pack200 \
+           ${JAVA_HOME}/jre/bin/policytool \
+           ${JAVA_HOME}/jre/bin/rmid \
+           ${JAVA_HOME}/jre/bin/rmiregistry \
+           ${JAVA_HOME}/jre/bin/servertool \
+           ${JAVA_HOME}/jre/bin/tnameserv \
+           ${JAVA_HOME}/jre/bin/unpack200 \
+           ${JAVA_HOME}/jre/lib/javaws.jar \
+           ${JAVA_HOME}/jre/lib/deploy* \
+           ${JAVA_HOME}/jre/lib/desktop \
+           ${JAVA_HOME}/jre/lib/*javafx* \
+           ${JAVA_HOME}/jre/lib/*jfx* \
+           ${JAVA_HOME}/jre/lib/amd64/libdecora_sse.so \
+           ${JAVA_HOME}/jre/lib/amd64/libprism_*.so \
+           ${JAVA_HOME}/jre/lib/amd64/libfxplugins.so \
+           ${JAVA_HOME}/jre/lib/amd64/libglass.so \
+           ${JAVA_HOME}/jre/lib/amd64/libgstreamer-lite.so \
+           ${JAVA_HOME}/jre/lib/amd64/libjavafx*.so \
+           ${JAVA_HOME}/jre/lib/amd64/libjfx*.so \
+           ${JAVA_HOME}/jre/lib/ext/jfxrt.jar \
+           ${JAVA_HOME}/jre/lib/ext/nashorn.jar \
+           ${JAVA_HOME}/jre/lib/oblique-fonts \
+           ${JAVA_HOME}/jre/lib/plugin.jar \
+           /tmp/* /var/cache/apk/* && \
+    apt-get remove --purge -y ca-certificates curl unzip && \
+    apt-get autoremove --purge -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN yum install -y ed less vim ca-certificates && \
-yum clean all
+#rocker-org/rocker-versioned/r-ver/3.4.1/Dockerfile
+#https://github.com/rocker-org/rocker-versioned/blob/master/r-ver/3.4.1/Dockerfile
+#FROM debian:stretch
 
-#RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
-#	&& locale-gen en_US.utf8 \
-#	&& /usr/sbin/update-locale LANG=en_US.UTF-8
-#ENV LC_ALL en_US.UTF-8
-#ENV LANG en_US.UTF-8
-#ENV R_BASE_VERSION 3.4.1
+LABEL org.label-schema.license="GPL-2.0" \
+      org.label-schema.vcs-url="https://github.com/rocker-org/rocker-versioned" \
+      org.label-schema.vendor="Rocker Project" \
+      maintainer="Carl Boettiger <cboettig@ropensci.org>"
 
-#RUN yum install -y R-core && \
-#yum install -y R-devel && \
-#yum install -y R-littler && \
-#yum install -y rstudio && \
-#yum clean all
+ARG R_VERSION
+ARG BUILD_DATE
+ENV BUILD_DATE ${BUILD_DATE:-}
+ENV R_VERSION=${R_VERSION:-3.4.1} \
+    LC_ALL=en_US.UTF-8 \
+    LANG=en_US.UTF-8 \
+    TERM=xterm
 
-RUN yum install -y epel-release
-RUN yum install R -y
-#RUN yum install -y rstudio
+## dependencies. Use cloudfront, official CDN gives frequent 503 errors
+RUN sed -i "s/deb.debian.org/cloudfront.debian.net/" /etc/apt/sources.list \
+  && sed -i "s/security.debian.org/cloudfront.debian.net\/debian-security/" /etc/apt/sources.list \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+    bash-completion \
+    ca-certificates \
+    file \
+    fonts-texgyre \
+    g++ \
+    gfortran \
+    gsfonts \
+    libbz2-1.0 \
+    libcurl3 \
+    libicu57 \
+    libjpeg62-turbo \
+    libopenblas-dev \
+    libpangocairo-1.0-0 \
+    libpcre3 \
+    libpng16-16 \
+    libreadline7 \
+    libtiff5 \
+    liblzma5 \
+    locales \
+    make \
+    unzip \
+    zip \
+    zlib1g \
+  && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
+  && locale-gen en_US.utf8 \
+  && /usr/sbin/update-locale LANG=en_US.UTF-8 \
+  && BUILDDEPS="curl \
+    default-jdk \
+    libbz2-dev \
+    libcairo2-dev \
+    libcurl4-openssl-dev \
+    libpango1.0-dev \
+    libjpeg-dev \
+    libicu-dev \
+    libpcre3-dev \
+    libpng-dev \
+    libreadline-dev \
+    libtiff5-dev \
+    liblzma-dev \
+    libx11-dev \
+    libxt-dev \
+    perl \
+    tcl8.6-dev \
+    tk8.6-dev \
+    texinfo \
+    texlive-extra-utils \
+    texlive-fonts-recommended \
+    texlive-fonts-extra \
+    texlive-latex-recommended \
+    x11proto-core-dev \
+    xauth \
+    xfonts-base \
+    xvfb \
+    zlib1g-dev" \
+  && apt-get install -y --no-install-recommends $BUILDDEPS \
+  && cd tmp/ \
+  ## Download source code
+  && curl -O https://cran.r-project.org/src/base/R-3/R-${R_VERSION}.tar.gz \
+  ## Extract source code
+  && tar -xf R-${R_VERSION}.tar.gz \
+  && cd R-${R_VERSION} \
+  ## Set compiler flags
+  && R_PAPERSIZE=letter \
+    R_BATCHSAVE="--no-save --no-restore" \
+    R_BROWSER=xdg-open \
+    PAGER=/usr/bin/pager \
+    PERL=/usr/bin/perl \
+    R_UNZIPCMD=/usr/bin/unzip \
+    R_ZIPCMD=/usr/bin/zip \
+    R_PRINTCMD=/usr/bin/lpr \
+    LIBnn=lib \
+    AWK=/usr/bin/awk \
+    CFLAGS="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g" \
+    CXXFLAGS="-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g" \
+  ## Configure options
+  ./configure --enable-R-shlib \
+               --enable-memory-profiling \
+               --with-readline \
+               --with-blas="-lopenblas" \
+               --disable-nls \
+               --without-recommended-packages \
+  ## Build and install
+  && make \
+  && make install \
+  ## Add a default CRAN mirror
+  && echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl')" >> /usr/local/lib/R/etc/Rprofile.site \
+  ## Add a library directory (for user-installed packages)
+  && mkdir -p /usr/local/lib/R/site-library \
+  && chown root:staff /usr/local/lib/R/site-library \
+  && chmod g+wx /usr/local/lib/R/site-library \
+  ## Fix library path
+  && echo "R_LIBS_USER='/usr/local/lib/R/site-library'" >> /usr/local/lib/R/etc/Renviron \
+  && echo "R_LIBS=\${R_LIBS-'/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library'}" >> /usr/local/lib/R/etc/Renviron \
+  ## install packages from date-locked MRAN snapshot of CRAN
+  && [ -z "$BUILD_DATE" ] && BUILD_DATE=$(TZ="America/Los_Angeles" date -I) || true \
+  && MRAN=https://mran.microsoft.com/snapshot/${BUILD_DATE} \
+  && echo MRAN=$MRAN >> /etc/environment \
+  && export MRAN=$MRAN \
+  && echo "options(repos = c(CRAN='$MRAN'), download.file.method = 'libcurl')" >> /usr/local/lib/R/etc/Rprofile.site \
+  ## Use littler installation scripts
+  && Rscript -e "install.packages(c('littler', 'docopt'), repo = '$MRAN')" \
+  && ln -s /usr/local/lib/R/site-library/littler/examples/install2.r /usr/local/bin/install2.r \
+  && ln -s /usr/local/lib/R/site-library/littler/examples/installGithub.r /usr/local/bin/installGithub.r \
+  && ln -s /usr/local/lib/R/site-library/littler/bin/r /usr/local/bin/r \
+  ## TEMPORARY WORKAROUND to get more robust error handling for install2.r prior to littler update
+  && curl -O /usr/local/bin/install2.r https://github.com/eddelbuettel/littler/raw/master/inst/examples/install2.r \
+  && chmod +x /usr/local/bin/install2.r \
+  ## Clean up from R source install
+  && cd / \
+  && rm -rf /tmp/* \
+  && apt-get remove --purge -y $BUILDDEPS \
+  && apt-get autoremove -y \
+  && apt-get autoclean -y \
+  && rm -rf /var/lib/apt/lists/*
 
-RUN wget https://download2.rstudio.org/rstudio-server-rhel-1.0.44-x86_64.rpm
-RUN yum install --nogpgcheck rstudio-server-rhel-1.0.44-x86_64.rpm -y
-RUN yum clean all
-#RUN firewall-cmd --permanent --zone=public --add-port=8787/tcp
+#CMD ["R"]
 
-RUN useradd docker \
-	&& mkdir /home/docker \
-	&& chown docker:docker /home/docker \
-	&& addgroup docker staff
+#rocker-org/rocker-versioned/rstudio/3.4.1/Dockerfile
+#https://github.com/rocker-org/rocker-versioned/blob/master/rstudio/3.4.1/Dockerfile
+#FROM rocker/r-ver:3.4.1
+
+ARG RSTUDIO_VERSION
+ARG PANDOC_TEMPLATES_VERSION 
+ENV PANDOC_TEMPLATES_VERSION=${PANDOC_TEMPLATES_VERSION:-1.18} \
+    PATH=/usr/lib/rstudio-server/bin:$PATH
+
+## Download and install RStudio server & dependencies
+## Attempts to get detect latest version, otherwise falls back to version given in $VER
+## Symlink pandoc, pandoc-citeproc so they are available system-wide
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    file \
+    git \
+    libapparmor1 \
+    libcurl4-openssl-dev \
+    libedit2 \
+    libssl-dev \
+    lsb-release \
+    psmisc \
+    python-setuptools \
+    sudo \
+    wget \
+  && wget -O libssl1.0.0.deb http://ftp.debian.org/debian/pool/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u6_amd64.deb \
+  && dpkg -i libssl1.0.0.deb \
+  && rm libssl1.0.0.deb \
+  && RSTUDIO_LATEST=$(wget --no-check-certificate -qO- https://s3.amazonaws.com/rstudio-server/current.ver) \
+  && [ -z "$RSTUDIO_VERSION" ] && RSTUDIO_VERSION=$RSTUDIO_LATEST || true \
+  && wget -q http://download2.rstudio.org/rstudio-server-${RSTUDIO_VERSION}-amd64.deb \
+  && dpkg -i rstudio-server-${RSTUDIO_VERSION}-amd64.deb \
+  && rm rstudio-server-*-amd64.deb \
+  ## Symlink pandoc & standard pandoc templates for use system-wide
+  && ln -s /usr/lib/rstudio-server/bin/pandoc/pandoc /usr/local/bin \
+  && ln -s /usr/lib/rstudio-server/bin/pandoc/pandoc-citeproc /usr/local/bin \
+  && wget https://github.com/jgm/pandoc-templates/archive/${PANDOC_TEMPLATES_VERSION}.tar.gz \
+  && mkdir -p /opt/pandoc/templates && tar zxf ${PANDOC_TEMPLATES_VERSION}.tar.gz \
+  && cp -r pandoc-templates*/* /opt/pandoc/templates && rm -rf pandoc-templates* \
+  && mkdir /root/.pandoc && ln -s /opt/pandoc/templates /root/.pandoc/templates \
+  && rm ${PANDOC_TEMPLATES_VERSION}.tar.gz \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/ \
+  ## RStudio wants an /etc/R, will populate from $R_HOME/etc
+  && mkdir -p /etc/R \
+  ## Write config files in $R_HOME/etc
+  && echo '\n\
+    \n# Configure httr to perform out-of-band authentication if HTTR_LOCALHOST \
+    \n# is not set since a redirect to localhost may not work depending upon \
+    \n# where this Docker container is running. \
+    \nif(is.na(Sys.getenv("HTTR_LOCALHOST", unset=NA))) { \
+    \n  options(httr_oob_default = TRUE) \
+    \n}' >> /usr/local/lib/R/etc/Rprofile.site \
+  && echo "PATH=\"\${PATH}\"" >> /usr/local/lib/R/etc/Renviron \
+  ## Need to configure non-root user for RStudio
+  && useradd rstudio \
+  && echo "rstudio:rstudio" | chpasswd \
+	&& mkdir /home/rstudio \
+	&& chown rstudio:rstudio /home/rstudio \
+	&& addgroup rstudio staff \
+  ## Prevent rstudio from deciding to use /usr/bin/R if a user apt-get installs a package
+  &&  echo 'rsession-which-r=/usr/local/bin/R' >> /etc/rstudio/rserver.conf \ 
+  ## configure git not to request password each time 
+  && git config --system credential.helper 'cache --timeout=3600' \
+  && git config --system push.default simple \
+  ## Set up S6 init system
+  && wget -P /tmp/ https://github.com/just-containers/s6-overlay/releases/download/v1.11.0.1/s6-overlay-amd64.tar.gz \
+  && tar xzf /tmp/s6-overlay-amd64.tar.gz -C / \
+  && mkdir -p /etc/services.d/rstudio \
+  && echo '#!/bin/bash \
+           \n exec /usr/lib/rstudio-server/bin/rserver --server-daemonize 0' \
+           > /etc/services.d/rstudio/run \
+   && echo '#!/bin/bash \
+           \n rstudio-server stop' \
+           > /etc/services.d/rstudio/finish
+
+COPY userconf.sh /etc/cont-init.d/userconf
+
+## running with "-e ADD=shiny" adds shiny server
+COPY add_shiny.sh /etc/cont-init.d/add
 
 EXPOSE 8787
+
 ## automatically link a shared volume for kitematic users
 VOLUME /home/rstudio/kitematic
+
 #CMD ["/init"]
 
-	
-CMD ["/bin/bash"]  
+CMD ["bash"]
+
