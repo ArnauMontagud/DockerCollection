@@ -23,7 +23,7 @@ If you do not want to mount the local folder, the image can be started with the 
 
     docker run --rm -ti -p 8787:8787 arnaumontagud/logical_modelling_pipeline
 
-At this point, you will be able to use the terminal to run all the steps of the tutorial. In the steps in which you need to run R, run command
+At this point, you will be able to use the terminal to run all the tutorial. In the parts in which you need to run R, run command
 
     /init
     
