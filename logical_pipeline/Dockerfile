@@ -298,4 +298,3 @@ VOLUME /home/rstudio/kitematic
 RUN R -e " install.packages(c('FactoMineR','ggplot2','scales','plyr','gridExtra','ggrepel','RColorBrewer','reshape2','cowplot'), repos = 'http://cran.us.r-project.org')"
 #CMD ["/init"]
 CMD ["bash"]
-
