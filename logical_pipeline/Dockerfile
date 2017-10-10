@@ -21,11 +21,6 @@ RUN set -ex; \
 		rm -rf /var/lib/apt/lists/*; \
 	fi
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-		flex \ 
-		bison \
-	&& rm -rf /var/lib/apt/lists/*
-
 #docker-library/openjdk/8-jre/Dockerfile
 #https://github.com/docker-library/openjdk/blob/master/8-jre/Dockerfile
 #old: https://github.com/docker-library/openjdk/blob/b4f29ba829765552239bd18f272fcdaf09eca259/8-jre/Dockerfile
@@ -34,6 +29,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		bzip2 \
 		unzip \
 		xz-utils \
+		flex \ 
+		bison \
 	&& rm -rf /var/lib/apt/lists/*
 # Default to UTF-8 file.encoding
 ENV LANG C.UTF-8
