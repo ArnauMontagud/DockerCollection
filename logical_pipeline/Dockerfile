@@ -21,8 +21,7 @@ RUN set -ex; \
 		rm -rf /var/lib/apt/lists/*; \
 	fi
 
-RUN sudo apt-get update && \
-	apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
 		flex \ 
 		bison \
 	&& rm -rf /var/lib/apt/lists/*
