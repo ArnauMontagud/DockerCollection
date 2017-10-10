@@ -43,11 +43,15 @@ RUN { \
 # do some fancy footwork to create a JAVA_HOME that's cross-architecture-safe
 RUN ln -svT "/usr/lib/jvm/java-8-openjdk-$(dpkg --print-architecture)" /docker-java-home
 ENV JAVA_HOME /docker-java-home/jre
-ENV JAVA_VERSION 8u131
-ENV JAVA_DEBIAN_VERSION 8u131-b11-2
+#ENV JAVA_VERSION 8u131
+#ENV JAVA_DEBIAN_VERSION 8u131-b11-2
+ENV JAVA_VERSION 8u141
+ENV JAVA_DEBIAN_VERSION 8u141-b15-1~deb9u1
+
 # see https://bugs.debian.org/775775
 # and https://github.com/docker-library/java/issues/19#issuecomment-70546872
 ENV CA_CERTIFICATES_JAVA_VERSION 20170531+nmu1
+
 RUN set -ex; \
 	\
 # deal with slim variants not having man page directories (which causes "update-alternatives" to fail)
