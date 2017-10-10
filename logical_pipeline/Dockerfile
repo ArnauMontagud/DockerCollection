@@ -22,7 +22,8 @@ RUN set -ex; \
 	fi
 
 #docker-library/openjdk/8-jre/Dockerfile
-#https://github.com/docker-library/openjdk/blob/b4f29ba829765552239bd18f272fcdaf09eca259/8-jre/Dockerfile
+#https://github.com/docker-library/openjdk/blob/master/8-jre/Dockerfile
+#old: https://github.com/docker-library/openjdk/blob/b4f29ba829765552239bd18f272fcdaf09eca259/8-jre/Dockerfile
 #FROM buildpack-deps:stretch-curl
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		bzip2 \
