@@ -20,7 +20,6 @@ RUN set -ex; \
 		; \
 		rm -rf /var/lib/apt/lists/*; \
 	fi
-#RUN ln -sf /bin/bash /usr/bin/bash 
 
 
 #docker-library/openjdk/8-jre/Dockerfile
@@ -255,6 +254,7 @@ RUN apt-get update \
   && rm rstudio-server-*-amd64.deb \
   ## Symlink pandoc & standard pandoc templates for use system-wide
   && ln -s /usr/lib/rstudio-server/bin/pandoc/pandoc /usr/local/bin \
+  && ln -s /bin/bash /usr/bin/bash \
   && ln -s /usr/lib/rstudio-server/bin/pandoc/pandoc-citeproc /usr/local/bin \
   && wget https://github.com/jgm/pandoc-templates/archive/${PANDOC_TEMPLATES_VERSION}.tar.gz \
   && mkdir -p /opt/pandoc/templates && tar zxf ${PANDOC_TEMPLATES_VERSION}.tar.gz \
