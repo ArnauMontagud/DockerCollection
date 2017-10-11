@@ -207,7 +207,6 @@ RUN sed -i "s/deb.debian.org/cloudfront.debian.net/" /etc/apt/sources.list \
   && ln -s /usr/local/lib/R/site-library/littler/examples/install2.r /usr/local/bin/install2.r \
   && ln -s /usr/local/lib/R/site-library/littler/examples/installGithub.r /usr/local/bin/installGithub.r \
   && ln -s /usr/local/lib/R/site-library/littler/bin/r /usr/local/bin/r \
-  && ln -sf /bin/bash /usr/bin/bash \
   ## TEMPORARY WORKAROUND to get more robust error handling for install2.r prior to littler update
   && curl -O /usr/local/bin/install2.r https://github.com/eddelbuettel/littler/raw/master/inst/examples/install2.r \
   && chmod +x /usr/local/bin/install2.r \
