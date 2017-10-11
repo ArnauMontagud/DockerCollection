@@ -4,7 +4,7 @@
 #https://github.com/docker-library/buildpack-deps/blob/9f60e19008458220114f1a0b6cd3710f1015d402/stretch/curl/Dockerfile
 FROM debian:stretch
 
-LABEL maintainer=" Arnau Montagud <arnau.montagud@gmail.com> "
+LABEL maintainer="Arnau Montagud <arnau.montagud@gmail.com>"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
@@ -20,7 +20,7 @@ RUN set -ex; \
 		; \
 		rm -rf /var/lib/apt/lists/*; \
 	fi
-RUN ln -sf /bin/bash /usr/bin/bash 
+#RUN ln -sf /bin/bash /usr/bin/bash 
 
 
 #docker-library/openjdk/8-jre/Dockerfile
@@ -207,6 +207,7 @@ RUN sed -i "s/deb.debian.org/cloudfront.debian.net/" /etc/apt/sources.list \
   && ln -s /usr/local/lib/R/site-library/littler/examples/install2.r /usr/local/bin/install2.r \
   && ln -s /usr/local/lib/R/site-library/littler/examples/installGithub.r /usr/local/bin/installGithub.r \
   && ln -s /usr/local/lib/R/site-library/littler/bin/r /usr/local/bin/r \
+  && ln -sf /bin/bash /usr/bin/bash \
   ## TEMPORARY WORKAROUND to get more robust error handling for install2.r prior to littler update
   && curl -O /usr/local/bin/install2.r https://github.com/eddelbuettel/littler/raw/master/inst/examples/install2.r \
   && chmod +x /usr/local/bin/install2.r \
