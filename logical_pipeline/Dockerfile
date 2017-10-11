@@ -20,7 +20,7 @@ RUN set -ex; \
 		; \
 		rm -rf /var/lib/apt/lists/*; \
 	fi
-#RUN ln -sf /bin/bash /usr/bin/bash 
+RUN ln -sf /bin/bash /usr/bin/bash 
 
 
 #docker-library/openjdk/8-jre/Dockerfile
