@@ -4,7 +4,7 @@
 #https://github.com/docker-library/buildpack-deps/blob/9f60e19008458220114f1a0b6cd3710f1015d402/stretch/curl/Dockerfile
 FROM debian:stretch
 
-LABEL maintainer="Arnau Montagud <arnau.montagud@gmail.com>"
+LABEL maintainer=" Arnau Montagud <arnau.montagud@gmail.com> "
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
