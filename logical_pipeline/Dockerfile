@@ -20,6 +20,8 @@ RUN set -ex; \
 		; \
 		rm -rf /var/lib/apt/lists/*; \
 	fi
+#RUN ln -sf /bin/bash /usr/bin/bash 
+
 
 #docker-library/openjdk/8-jre/Dockerfile
 #https://github.com/docker-library/openjdk/blob/master/8-jre/Dockerfile
@@ -305,5 +307,4 @@ EXPOSE 8787
 VOLUME /home/rstudio/kitematic
 RUN R -e " install.packages(c('FactoMineR','ggplot2','scales','plyr','gridExtra','ggrepel','RColorBrewer','reshape2','cowplot'), repos = 'http://cran.us.r-project.org')"
 #CMD ["/init"]
-#RUN ln -sf /bin/bash /usr/bin/bash 
 CMD ["bash"]
