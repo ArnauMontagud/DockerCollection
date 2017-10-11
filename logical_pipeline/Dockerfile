@@ -185,6 +185,7 @@ RUN sed -i "s/deb.debian.org/cloudfront.debian.net/" /etc/apt/sources.list \
   && make \
   && make install \
   ## Add a default CRAN mirror
+  #&& mkdir -p /usr/local/lib/R/etc \
   && echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl')" >> /usr/local/lib/R/etc/Rprofile.site \
   ## Add a library directory (for user-installed packages)
   && mkdir -p /usr/local/lib/R/site-library \
