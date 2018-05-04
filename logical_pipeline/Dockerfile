@@ -92,16 +92,14 @@ RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
 
 ARG R_VERSION
 ARG BUILD_DATE
-ENV BUILD_DATE ${BUILD_DATE:-}
+ENV BUILD_DATE ${BUILD_DATE:-2017-09-28}
 ENV R_VERSION=${R_VERSION:-3.4.1} \
     LC_ALL=en_US.UTF-8 \
     LANG=en_US.UTF-8 \
     TERM=xterm
 
 ## dependencies. Use cloudfront, official CDN gives frequent 503 errors
-RUN sed -i "s/deb.debian.org/cloudfront.debian.net/" /etc/apt/sources.list \
-  && sed -i "s/security.debian.org/cloudfront.debian.net\/debian-security/" /etc/apt/sources.list \
-  && apt-get update \
+RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     bash-completion \
     ca-certificates \
@@ -110,6 +108,7 @@ RUN sed -i "s/deb.debian.org/cloudfront.debian.net/" /etc/apt/sources.list \
     g++ \
     gfortran \
     gsfonts \
+    libblas-dev \
     libbz2-1.0 \
     libcurl3 \
     libicu57 \
@@ -181,7 +180,8 @@ RUN sed -i "s/deb.debian.org/cloudfront.debian.net/" /etc/apt/sources.list \
   ./configure --enable-R-shlib \
                --enable-memory-profiling \
                --with-readline \
-               --with-blas="-lopenblas" \
+               --with-blas \
+               --with-tcltk \
                --disable-nls \
                --without-recommended-packages \
   ## Build and install
