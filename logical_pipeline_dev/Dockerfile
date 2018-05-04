@@ -4,6 +4,8 @@
 #https://github.com/rocker-org/rocker-versioned/blob/master/rstudio/3.4.1/Dockerfile
 FROM rocker/r-ver:3.4.1
 
+LABEL maintainer="Arnau Montagud <arnau.montagud@gmail.com>"
+
 ARG RSTUDIO_VERSION
 ## Comment the next line to use the latest RStudio Server version by default
 ENV RSTUDIO_VERSION=${RSTUDIO_VERSION:-1.0.153}
