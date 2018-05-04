@@ -6,12 +6,28 @@ LABEL version="1.0"
 RUN yum update -y \
 	&& yum groupinstall -y "Development tools" \
 	&& yum install -y \
+		wget \
+		which \
+		tar \
 		flex \
 		bison
 
 # add python2, python3, matplotlib, matplotlib.gridspec, matplotlib.patches, matplotlib.pylab, numpy, pandas, seaborn, xlsxwriter
 # RUN yum -y install epel-release && yum clean all
 # RUN yum -y install python-pip && yum clean all
+RUN yum install -y epel-release \
+&& yum -y update \
+&& yum -y groupinstall "Development Tools" \
+&& yum -y install python-devel \
+&& yum -y install blas --enablerepo=epel \
+&& yum -y install lapack --enablerepo=epel \
+&& yum -y install Cython --enablerepo=epel \
+&& yum -y install python-pip
+
+RUN pip install boto3 \
+&& pip install numpy \
+&& pip install pandas \
+&& pip install scipy
 
 ## download PhysiBoSS srcs from GitHub WORKDIR /home/
 #RUN git clone https://github.com/gletort/PhysiBoSS.git
