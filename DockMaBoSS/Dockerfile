@@ -1,4 +1,4 @@
-FROM rocker/r-base
+FROM rocker/rstudio
 # Version informations 
 MAINTAINER Arnau Montagud <arnau.montagud@gmail.com> 
 LABEL version="1.0"
