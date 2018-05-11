@@ -18,7 +18,7 @@ RUN wget  http://maboss.curie.fr/pub/MaBoSS-env-2.0.tgz \
 	&& cd MaBoSS-env-2.0/ \
 	&& ./check-requirements.sh
 # compile MaBoSS
-RUN cd engine/src/; make install; 
+RUN cd engine/src/; make install
 # make MAXNODES=150 install
 RUN cd ../../; source ./MaBoSS.env
 
