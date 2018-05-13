@@ -19,10 +19,10 @@ RUN wget http://maboss.curie.fr/pub/MaBoSS-env-2.0.tgz \
 	&& ./check-requirements.sh
 # compile MaBoSS
 RUN cd MaBoSS-env-2.0/engine/src/ \
-	&& make install
-# make MAXNODES=150 install
-# RUN cd ../../
-# RUN source ./MaBoSS.env
+	&& make install \
+	&& make MAXNODES=150 install \
+	&& cd ../../ \
+	&& source ./MaBoSS.env
 
 # create directory where to mount local folders to run the simulation inside RUN mkdir running
 CMD ["/bin/bash"]
