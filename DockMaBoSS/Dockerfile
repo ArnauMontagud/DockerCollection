@@ -23,7 +23,7 @@ RUN cd MaBoSS-env-2.0/engine/src/ \
 	&& make MAXNODES=150 install \
 	&& cd ../../ \
 	&& source ./MaBoSS.env
-
-# create directory where to mount local folders to run the simulation inside RUN mkdir running
+# install python3 packages
+RUN pip3 install numpy pandas matplotlib seaborn xlsxwriter
 CMD ["/bin/bash"]
 
