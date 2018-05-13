@@ -13,14 +13,16 @@ RUN apt-get update \
 		python3-wheel
 
 # download MaBoSS from http://maboss.curie.fr/pub/MaBoSS-env-2.0.tgz
-RUN wget  http://maboss.curie.fr/pub/MaBoSS-env-2.0.tgz \
+RUN wget http://maboss.curie.fr/pub/MaBoSS-env-2.0.tgz \
 	&& tar xvfz MaBoSS-env-2.0.tgz \
 	&& cd MaBoSS-env-2.0/ \
 	&& ./check-requirements.sh
 # compile MaBoSS
-# RUN cd engine/src/; make install
+RUN cd engine/src/
+RUN make install
 # make MAXNODES=150 install
-# RUN cd ../../; source ./MaBoSS.env
+RUN cd ../../
+RUN source ./MaBoSS.env
 
 # create directory where to mount local folders to run the simulation inside RUN mkdir running
 CMD ["/bin/bash"]
