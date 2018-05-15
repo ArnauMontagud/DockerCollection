@@ -21,8 +21,6 @@ RUN wget http://maboss.curie.fr/pub/MaBoSS-env-2.0.tgz \
 RUN cd MaBoSS-env-2.0/engine/src/ \
 	&& make install \
 	&& make MAXNODES=150 install
-# RUN cd MaBoSS-env-2.0/ \
-# 	&& ./MaBoSS.env
 # install python3 packages
 RUN pip3 install numpy pandas matplotlib seaborn xlsxwriter
 CMD ["/bin/bash"]
